@@ -39,6 +39,78 @@
             display: none;
         }
 
+        /* Entry Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+            cursor: pointer;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-title {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .loading-rocket {
+            font-size: 6em;
+            margin-bottom: 30px;
+        }
+
+        .loading-button {
+            padding: 20px 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0f172a;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(74, 222, 128, 0.4);
+        }
+
+        .loading-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(74, 222, 128, 0.6);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .quiz-container {
             width: 100%;
             max-width: 800px;
@@ -204,6 +276,28 @@
         .bifurcation-btn .subtitle {
             font-size: 0.9em;
             color: #94a3b8;
+        }
+
+        .bifurcation-btn.big-button {
+            flex: 2;
+            transform: scale(1.05);
+        }
+
+        .bifurcation-btn.small-button {
+            flex: 0.8;
+            opacity: 0.7;
+        }
+
+        .bifurcation-btn.small-button .icon {
+            font-size: 2em;
+        }
+
+        .bifurcation-btn.small-button .title {
+            font-size: 1em;
+        }
+
+        .bifurcation-btn.small-button .subtitle {
+            font-size: 0.8em;
         }
 
         .help-flow {
@@ -442,6 +536,13 @@
     </style>
 </head>
 <body>
+    <!-- Entry Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-title">Financial Escape Velocity</div>
+        <div class="loading-rocket">🚀</div>
+        <button class="loading-button" onclick="startQuiz()">Let's get started</button>
+    </div>
+
     <!-- Onboarding Quiz Screen -->
     <div class="onboarding-screen" id="onboardingScreen">
         <div class="quiz-container">
@@ -515,18 +616,18 @@
                 <h2 class="question-title">💰 Your Income</h2>
                 <p class="question-subtitle">Let's figure out your monthly income</p>
 
-                <p style="margin-bottom: 20px; color: #cbd5e1;">Do you know your exact monthly income?</p>
+                <p style="margin-bottom: 20px; color: #cbd5e1;">Do you need help calculating your income?</p>
 
                 <div class="bifurcation-buttons">
-                    <div class="bifurcation-btn" onclick="selectIncomePath('yes')">
-                        <div class="icon">✅</div>
-                        <div class="title">Yes</div>
-                        <div class="subtitle">I know my exact income</div>
-                    </div>
-                    <div class="bifurcation-btn" onclick="selectIncomePath('no')">
+                    <div class="bifurcation-btn big-button" onclick="selectIncomePath('no')">
                         <div class="icon">🧞</div>
-                        <div class="title">No, Need Help</div>
-                        <div class="subtitle">Use Income Genie</div>
+                        <div class="title">Genie Estimate</div>
+                        <div class="subtitle">AI estimates it all - you can edit after</div>
+                    </div>
+                    <div class="bifurcation-btn small-button" onclick="selectIncomePath('yes')">
+                        <div class="icon">✋</div>
+                        <div class="title">Manual Entry</div>
+                        <div class="subtitle">Enter it yourself</div>
                     </div>
                 </div>
 
@@ -567,15 +668,15 @@
                 <p style="margin-bottom: 20px; color: #cbd5e1;">Do you need help calculating your expenses?</p>
 
                 <div class="bifurcation-buttons">
-                    <div class="bifurcation-btn" onclick="selectExpensePath('no')">
-                        <div class="icon">✅</div>
-                        <div class="title">No</div>
-                        <div class="subtitle">I know my expenses</div>
+                    <div class="bifurcation-btn big-button" onclick="selectExpensePath('yes')">
+                        <div class="icon">🧞</div>
+                        <div class="title">Genie Estimate</div>
+                        <div class="subtitle">AI estimates it all - you can edit after</div>
                     </div>
-                    <div class="bifurcation-btn" onclick="selectExpensePath('yes')">
-                        <div class="icon">🔍</div>
-                        <div class="title">Yes, Help Me</div>
-                        <div class="subtitle">Expense analyzer</div>
+                    <div class="bifurcation-btn small-button" onclick="selectExpensePath('no')">
+                        <div class="icon">✋</div>
+                        <div class="title">Manual Entry</div>
+                        <div class="subtitle">Enter it yourself</div>
                     </div>
                 </div>
 
@@ -684,6 +785,21 @@
                 <div style="margin-top: 30px; text-align: center; font-size: 1.3em; color: #4ade80;">
                     Total Assets: <span id="totalAssets">$0</span>
                 </div>
+                <div style="margin-top: 15px; text-align: center; font-size: 1.1em; color: #cbd5e1;">
+                    Current Annual Return: <span id="currentAnnualReturn" style="color: #4ade80; font-weight: bold;">$0</span>
+                </div>
+
+                <div style="margin-top: 40px; padding: 30px; background: rgba(74, 222, 128, 0.1); border: 2px solid #4ade80; border-radius: 15px;">
+                    <h3 style="margin-bottom: 20px; color: #4ade80; text-align: center;">📊 Current Asset Return Rate</h3>
+                    <p style="color: #cbd5e1; margin-bottom: 20px; text-align: center;">What annual return (ROI) are your current assets generating?</p>
+                    <div class="form-group">
+                        <label>Current ROI (%)</label>
+                        <input type="number" id="currentROI" placeholder="7" min="0" max="100" step="0.1" value="7" style="width: 100%; padding: 15px; font-size: 1.1em; background: rgba(15, 23, 42, 0.6); border: 2px solid #334155; border-radius: 10px; color: #ffffff;">
+                        <div style="margin-top: 10px; font-size: 0.9em; color: #94a3b8;">
+                            Examples: Savings account ~1%, Stocks ~10%, Bitcoin ~50%
+                        </div>
+                    </div>
+                </div>
 
                 <div class="navigation-buttons">
                     <button class="btn btn-secondary" onclick="previousQuestion(4)">← Back</button>
@@ -755,8 +871,14 @@
             expenses: 0,
             taxRate: 0,
             assets: {},
+            currentROI: 0.07,
             goal: 100000
         };
+
+        // Start quiz when user clicks button
+        function startQuiz() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
 
         // Load saved data from localStorage
         function loadSavedData() {
@@ -811,6 +933,7 @@
 
             if (current === 4) {
                 // Assets already saved on input
+                quizData.currentROI = parseFloat(document.getElementById('currentROI').value) / 100 || 0.07;
             }
 
             if (current === 5) {
@@ -899,6 +1022,11 @@
 
             document.getElementById('totalAssets').textContent = '$' + total.toLocaleString();
 
+            // Calculate and display current annual return
+            const currentROI = parseFloat(document.getElementById('currentROI').value) / 100 || 0.07;
+            const annualReturn = total * currentROI;
+            document.getElementById('currentAnnualReturn').textContent = '$' + Math.round(annualReturn).toLocaleString();
+
             // Update percentages
             document.querySelectorAll('.allocation-percent').forEach(span => {
                 const assetName = span.dataset.asset;
@@ -911,6 +1039,9 @@
         document.querySelectorAll('.asset-input').forEach(input => {
             input.addEventListener('input', updateAssetAllocations);
         });
+
+        // Update annual return when ROI changes
+        document.getElementById('currentROI').addEventListener('input', updateAssetAllocations);
 
         // Goal slider
         const goalSlider = document.getElementById('goalSlider');
@@ -940,8 +1071,8 @@
             quizData.goal = parseFloat(goalSlider.value);
             saveData();
 
-            // Redirect to dashboard
-            window.location.href = 'financial-escape-velocity-v5.html';
+            // Redirect to dystopian dashboard
+            window.location.href = 'dashboard-dystopian.html';
         }
 
         function editAnswers() {
